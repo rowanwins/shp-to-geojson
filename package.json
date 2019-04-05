@@ -1,0 +1,28 @@
+{
+  "name": "shp-to-geojson",
+  "version": "0.0.1",
+  "description": "A converter for shapefile to geojson",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "ava --verbose"
+  },
+  "author": "",
+  "license": "MIT",
+  "ava": {
+    "cache": false,
+    "require": [
+      "esm"
+    ],
+    "files": [
+      "./test/**/*.spec.js"
+    ]
+  },
+  "devDependencies": {
+    "ava": "^1.2.1",
+    "eslint": "^5.14.1",
+    "eslint-config-mourner": "^3.0.0",
+    "esm": "^3.2.6",
+    "rollup": "^1.2.3",
+    "standard": "^12.0.1"
+  }
+}
