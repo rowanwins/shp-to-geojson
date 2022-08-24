@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>shp-to-geojson</title>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+      
+        <!-- Load Leaflet from CDN -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+          integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+          crossorigin=""></script>
+          <link rel="stylesheet"
+          href="https://unpkg.com/@highlightjs/cdn-assets@10.5.0/styles/default.min.css">
+        <script src="https:///unpkg.com/@highlightjs/cdn-assets@10.5.0/highlight.min.js"></script>
+        <script src="https://unpkg.com/jszip@3.5.0/dist/jszip.min.js"></script>
+      
+        <script src="../dist/shp-to-geojson.browser.js"></script>
+        <style>
+          body {
+            margin:0;
+            padding:0;
+            font-family: Arial, Helvetica, sans-serif;
+          }
+          #map { 
+            position: absolute;
+            top:0;
+            bottom:0;
+            right:0;
+            left:50%;
+          }
+          .sidebar{
+            padding: 50px;
+            width: 45%;
+          }
+        </style>
+    </head>
+    <body>
+
+        <div class="sidebar">
+          <h2>Loading using a zip file</h2>
+          <p>Works in the browser using <a href="https://stuk.github.io/jszip/" target="_blank">jszip</a>. </p>
+          <br><br>
+          <label for="fileselect">Zipped Shp:</label>
+          <input type="file" id="fileselect" name="fileselect[]" onchange="filesUploaded()" accept="application/zip"/>
+          <br><br>
+        
+          <pre>
+            <code class="js">
+function filesUploaded() {
+  const elem = document.getElementById('fileselect')
+
+  // When a zip file is uploaded use jszip to unzip it
+  JSZip.loadAsync(elem.files[0]).then(function (zip) {
+
+    // Find the shp and dbf files from the zip
+    const fileNames = Object.keys(zip.files)
+    const shpName = fileNames.filter(f => f.includes('.shp'))[0]
+    const dbfName = fileNames.filter(f => f.includes('.dbf'))[0]
+    const projName = fileNames.filter(f => f.includes('.prj'))[0]
+
+    // Use JSZip to retrieve the arraybuffers of those files
+    Promise.all([
+      zip.files[shpName].async("arraybuffer"),
+      zip.files[dbfName].async("arraybuffer"),
+      zip.files[projName].async("text")
+      ]).then((values) => {
+      
+      // Once we have both the arraybuffers construct our ShpToGeoJson  
+      const zippedShp = new ShpToGeoJson({
+        arraybuffers: {
+          shpBuffer: values[0],
+          dbfBuffer: values[1],
+          projString: values[2]
+        }
+      })
+      const zippedGeoJson = L.geoJSON(zippedShp.getGeoJson()).addTo(map)
+      map.fitBounds(zippedGeoJson.getBounds())
+    });
+  });
+}
+            </code>
+          </pre>
+        
+        </div>
+
+
+
+        <div id="map"></div>
+        
+        <script>
+          hljs.initHighlightingOnLoad();
+
+          var map = L.map('map').setView([0, 0], 1);
+          var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+	          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	          subdomains: 'abcd',
+	          maxZoom: 19
+          }).addTo(map)
+        
+
+          const elem = document.getElementById('fileselect')
+          const zippedLayer = L.geoJSON(null).addTo(map)
+
+          function filesUploaded() {
+            zippedLayer.clearLayers()
+            JSZip.loadAsync(elem.files[0]).then(function (zip) {
+                const fileNames = Object.keys(zip.files)
+                const shpName = fileNames.filter(f => f.includes('.shp'))[0]
+                const dbfName = fileNames.filter(f => f.includes('.dbf'))[0]
+                const projName = fileNames.filter(f => f.includes('.prj'))[0]
+
+                Promise.all([
+                  zip.files[shpName].async("arraybuffer"),
+                  zip.files[dbfName].async("arraybuffer"),
+                  zip.files[projName].async("text")
+                ]).then((values) => {
+                    const zippedGeoJson = new ShpToGeoJson({
+                        arraybuffers: {
+                          shpBuffer: values[0],
+                          dbfBuffer: values[1],
+                          projString: values[2]
+                        }
+                    })
+                    const fc = zippedGeoJson.getGeoJson()
+                    zippedLayer.addData(fc)
+                    map.fitBounds(zippedLayer.getBounds())
+                });
+            });
+        }
+
+
+        </script>
+        
+    </body>
+</html>

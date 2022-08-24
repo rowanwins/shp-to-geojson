@@ -1,28 +1,57 @@
 {
-  "name": "shp-to-geojson",
-  "version": "0.0.1",
-  "description": "A converter for shapefile to geojson",
-  "main": "src/main.js",
-  "scripts": {
-    "test": "ava --verbose"
+  "name": "shapefile-to-geojson",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "unpkg": "dist/shp-to-geojson.browser.min.js",
+  "jsdelivr": "dist/shp-to-geojson.browser.min.js",
+  "main": "dist/shp-to-geojson.node.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rowanwins/shp-to-geojson.git"
   },
-  "author": "",
-  "license": "MIT",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "bench": "npm run build && node test/bench.js",
+    "build": "rollup -c",
+    "test": "ava"
+  },
   "ava": {
-    "cache": false,
+    "files": [
+      "test/test.js"
+    ],
+    "verbose": true,
     "require": [
       "esm"
     ],
-    "files": [
-      "./test/**/*.spec.js"
-    ]
+    "environmentVariables": {
+      "REGEN": "false"
+    }
+  },
+  "author": "Rowan Winsemius",
+  "license": "MIT",
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "cross-fetch": "^3.0.6",
+    "decompress": "^4.2.1",
+    "zip-local": "^0.3.4"
   },
   "devDependencies": {
-    "ava": "^1.2.1",
-    "eslint": "^5.14.1",
-    "eslint-config-mourner": "^3.0.0",
-    "esm": "^3.2.6",
-    "rollup": "^1.2.3",
-    "standard": "^12.0.1"
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.1",
+    "ava": "^3.10.1",
+    "benchmark": "^2.1.4",
+    "esm": "^3.2.25",
+    "glob": "^7.1.6",
+    "load-json-file": "^6.2.0",
+    "rollup": "^2.36.1",
+    "rollup-plugin-node-polyfills": "^0.2.1",
+    "rollup-plugin-terser": "^6.1.0",
+    "shapefile": "^0.6.6",
+    "shp": "0.0.1",
+    "shpjs": "^3.5.0",
+    "write-json-file": "^4.3.0"
   }
 }

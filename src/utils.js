@@ -1,33 +1,43 @@
-import NullGeom from './NullGeom'
-import Point from './Point'
-import MultiPoint from './MultiPoint'
-import {parseString, parseBoolean, parseNumber, parseDate} from './dbfParsers'
-
-export const shpTypes = {
-    0: {
-        type: null,
-        parser: NullGeom
-    },
-    1: {
-        type: 'Point',
-        parser: Point
-    },
-    11: {
-        type: 'PointZ',
-        parser: Point
-    },
-    8: {
-        type: 'MultiPoint',
-        parser: MultiPoint
-    }
+export function loadFilePromise(filepath) {
+  return new Promise((resolve, reject) => {
+    fetch(filepath)
+      .then(response => {
+        if (response.ok) {
+          if (responseType === 'text') return response.text()
+          return response.arrayBuffer()
+        } else {
+          throw new Error(`Could not resolve ${filepath}`)
+        }
+      })
+      .then(data => {
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 }
 
-export const dbfTypes = {
-    B: parseNumber,
-    C: parseString,
-    D: parseDate,
-    F: parseNumber,
-    L: parseBoolean,
-    M: parseNumber,
-    N: parseNumber
+export function loadFileRange(filepath, responseType, Range) {
+  return new Promise((resolve, reject) => {
+    fetch(filepath, {
+      headers: {
+        Range
+      }
+    })
+      .then(response => {
+        if (response.ok) {
+          if (responseType === 'text') return response.text()
+          return response.arrayBuffer()
+        } else {
+          throw new Error(`Could not resolve ${filepath}`)
+        }
+      })
+      .then(data => {
+        resolve(data)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 }

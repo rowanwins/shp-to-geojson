@@ -1,0 +1,26 @@
+{
+	"type": "FeatureCollection",
+	"bbox": [
+		133.59604692209592,
+		-25.391671616662553,
+		133.59604692209592,
+		-25.391671616662553
+	],
+	"features": [
+		{
+			"type": "Feature",
+			"properties": {
+				"id_int": 1,
+				"some_float": 11,
+				"some_text": "my text"
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [
+					133.59604692209592,
+					-25.391671616662553
+				]
+			}
+		}
+	]
+}

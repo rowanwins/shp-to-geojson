@@ -1,16 +1,8 @@
-import Feature from './Feature'
-
-export default class Point extends Feature {
-
-    constructor (record, shpType) {
-        super()
-
-        this.geometry = {
-            type: 'Point',
-            coordinates: [record.readDoubleLE(4), record.readDoubleLE(12)]
-        }
-
-        if (shpType === 'PointZ') this.geometry.coordinates.push(record.readDoubleLE(20))
+export default function createPoint (recordContent, hasZ) {
+    const p = {
+        type: "Point",
+        coordinates: [recordContent.readDoubleLE(4), recordContent.readDoubleLE(12)]
     }
-
+    if (hasZ) p.coordinates.push(recordContent.readDoubleLE(20))
+    return p
 }

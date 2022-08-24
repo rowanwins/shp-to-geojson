@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>shp-to-geojson</title>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+      
+        <!-- Load Leaflet from CDN -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+          integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+          crossorigin=""></script>
+          <link rel="stylesheet"
+          href="https://unpkg.com/@highlightjs/cdn-assets@10.5.0/styles/default.min.css">
+        <script src="https:///unpkg.com/@highlightjs/cdn-assets@10.5.0/highlight.min.js"></script>
+        <script src="../dist/shp-to-geojson.browser.js"></script>
+        <style>
+          body {
+            margin:0;
+            padding:0;
+            font-family: Arial, Helvetica, sans-serif;
+          }
+          #map { 
+            position: absolute;
+            top:0;
+            bottom:0;
+            right:0;
+            left:50%;
+          }
+          .sidebar{
+            padding: 50px;
+            width: 45%;
+          }
+        </style>
+    </head>
+    <body>
+
+        <div class="sidebar">
+            <h2>Streaming individual features</h2>
+            <p>Works in both NodeJS and the browser.</p>
+
+            <button onclick="loadNext()">Load Next Feature</button>
+
+            <pre><code class="js">
+const url = "https://cdn.rawgit.com/mbostock/shapefile/master/test/points.shp"
+
+const points = new ShpToGeoJson({
+  remotePath: url
+})
+
+let stream = null
+let featureIterator = null
+const l = L.geoJSON(null).addTo(map)
+
+points.load()
+.then(() => {
+  stream = points.streamGeoJsonFeatures()
+})
+
+// Our function that runs on the button click
+function loadNext () {
+  // If the generator is done we do nothing
+  if (featureIterator.done) return
+  
+  // call stream.next() to get the next feature
+  featureIterator = stream.next()
+  const feature = featureIterator.value
+  l.addData(feature)
+}
+           </code> </pre>
+
+        </div>
+
+        <div id="map"></div>
+        
+        <script>
+          hljs.initHighlightingOnLoad();
+          
+          var map = L.map('map').setView([0,0], 3);
+          var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+	          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	          subdomains: 'abcd',
+	          maxZoom: 19
+          }).addTo(map)
+
+          const points = new ShpToGeoJson({
+            remotePath: "https://cdn.rawgit.com/mbostock/shapefile/master/test/points.shp"
+          })
+          let stream = null
+          let featureIterator = null
+          const l = L.geoJSON(null).addTo(map)
+
+          points.load()
+          .then(() => {
+            stream = points.streamGeoJsonFeatures()
+            featureIterator = stream.next()
+          })
+
+          function loadNext () {
+            if (featureIterator.done) return
+            const feature = featureIterator.value
+            l.addData(feature)
+            featureIterator = stream.next()
+          }
+        </script>
+        
+    </body>
+</html>

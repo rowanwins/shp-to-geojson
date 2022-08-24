@@ -1,0 +1,25 @@
+{
+	"type": "FeatureCollection",
+	"bbox": [
+		143.38333076,
+		-36.067361120098255,
+		143.3833307646366,
+		-36.06736112
+	],
+	"features": [
+		{
+			"type": "Feature",
+			"properties": {
+				"id": 1
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [
+					143.38333076,
+					-36.06736112,
+					100
+				]
+			}
+		}
+	]
+}

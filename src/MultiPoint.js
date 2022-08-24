@@ -1,24 +1,11 @@
-import Feature from './Feature'
-
-export default class MultiPoint extends Feature {
-
-    constructor (record, shpType) {
-        super()
-
-        const numberPoints = record.readInt8(36)
-
-        this.geometry = {
-            type: 'MultiPoint',
-            coordinates: []
-        }
-
-        let i = 40
-        for (let j = 0; j < numberPoints; ++j, i += 16) {
-            const outCoords = [record.readDoubleLE(i, true), record.readDoubleLE(i + 8, true)]
-            if (shpType === 'MultiPointZ') outCoords.push(record.readDoubleLE(20))
-            this.geometry.coordinates.push(outCoords)
-        }
-
+export default function createMultiPoint (recordContent) {
+    const coordinates = []
+    const numPoints = recordContent.readInt16LE(36)
+    for (let i = 0; i < numPoints; i++) {
+        coordinates.push([recordContent.readDoubleLE(36 + (16 * i) + 4), recordContent.readDoubleLE(36 + (16 * i) + 12)])
     }
-
+    return {
+        "type": "MultiPoint",
+        "coordinates": coordinates
+    }
 }

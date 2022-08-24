@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>shp-to-geojson</title>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+      
+        <!-- Load Leaflet from CDN -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+          integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+          crossorigin=""></script>
+          <link rel="stylesheet"
+          href="https://unpkg.com/@highlightjs/cdn-assets@10.5.0/styles/default.min.css">
+        <script src="https:///unpkg.com/@highlightjs/cdn-assets@10.5.0/highlight.min.js"></script>
+        <script src="../dist/shp-to-geojson.browser.js"></script>
+        <style>
+          body {
+            margin:0;
+            padding:0;
+            font-family: Arial, Helvetica, sans-serif;
+          }
+          #map { 
+            position: absolute;
+            top:0;
+            bottom:0;
+            right:0;
+            left:50%;
+          }
+          .sidebar{
+            padding: 50px;
+            width: 45%;
+          }
+        </style>
+    </head>
+    <body>
+
+        <div class="sidebar">
+            <h2>Loading a remote url</h2>
+            <p>Works in both NodeJS and the browser.</p>
+            <p>Assumes the .shp and sidecar files can be found alongside eachother.</p>
+            <pre><code class="js">
+const url = "https://cdn.rawgit.com/mbostock/shapefile/master/test/points.shp"
+
+const points = new ShpToGeoJson({
+  remotePath: url
+})
+
+// Call .load() and wait for the promise to be resolved
+points.load()
+.then(() => {
+    
+  // Call the .getGeoJson() method
+  const featureCollection = points.getGeoJson()
+  const pointsLayer = L.geoJSON(featureCollection).addTo(map)
+  
+  // Automatically zoom to the data
+  map.fitBounds(pointsLayer.getBounds())
+})
+.catch((err) => {
+  console.error(`shp-to-geojson error: ${err.message}`)
+})
+           </code> </pre>
+
+        </div>
+
+        <div id="map"></div>
+        
+        <script>
+          hljs.initHighlightingOnLoad();
+          
+          var map = L.map('map').setView([-32.617356560963294, 147.17507620575037], 6);
+          var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+	          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	          subdomains: 'abcd',
+	          maxZoom: 19
+          }).addTo(map)
+
+          const points = new ShpToGeoJson({
+            remotePath: "https://cdn.rawgit.com/mbostock/shapefile/master/test/points.shp"
+          })
+          points.load()
+          .then(() => {
+              const l = L.geoJSON(points.getGeoJson()).addTo(map)
+              map.fitBounds(l.getBounds())
+          })
+          .catch((err) => {
+            console.error(`shp-to-geojson error: ${err.message}`)
+          })
+        </script>
+        
+    </body>
+</html>
