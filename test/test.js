@@ -14,17 +14,16 @@ const shpFiles = glob.sync(path.join(__dirname, 'harness', '*', '*.shp'))
 
 test('fixtures', t => {
 
-    shpFiles.forEach(filepath => {
-        console.log(filepath)
-        const geojson = new ShpToGeoJson({
+    shpFiles.forEach(async (filepath) => {
+        const shp = new ShpToGeoJson({
             filePath: filepath
-        }).getGeoJson();
+        })
+        const geojson = shp.getGeoJson();
 
         const geojsonPath = filepath.replace('.shp', '.geojson')
         if (process.env.REGEN === 'true') write.sync(geojsonPath, geojson);
         const expected = load.sync(geojsonPath);
         t.deepEqual(geojson, expected, filepath)
-
     })
 })
 

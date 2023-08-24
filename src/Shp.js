@@ -18,8 +18,8 @@ export default class Shp {
 
       if (this._options.arraybuffers) {
         this._shpBuffer = Buffer.from(this._options.arraybuffers.shpBuffer)
-        this._tableBuffer = Buffer.from(this._options.arraybuffers.dbfBuffer)
-        this._projString = Buffer.from(this._options.arraybuffers.projString)
+        this._tableBuffer = this._options.arraybuffers.dbfBuffer ? Buffer.from(this._options.arraybuffers.dbfBuffer) : null
+        this._projString = this._options.arraybuffers.projString ? Buffer.from(this._options.arraybuffers.projString) : null
         this._init()
       }
     }

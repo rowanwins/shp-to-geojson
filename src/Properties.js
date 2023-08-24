@@ -4,6 +4,8 @@ export default class Properties {
         this.tableBuffer = tableBuffer
         this.properties = []
 
+        if (tableBuffer === null) return
+
         this.tableHeaderLength = tableBuffer.readInt16LE(8)
         this.recordLength = tableBuffer.readInt16LE(10)
 
@@ -22,9 +24,9 @@ export default class Properties {
     }
 
     getRowProperties (index) {
-
-        const recordStart = this.tableHeaderLength + (index * this.recordLength) + 1
         const outProperties = {}
+        if (this.tableBuffer === null) return outProperties
+        const recordStart = this.tableHeaderLength + (index * this.recordLength) + 1
         let usedFieldLength = 0
         for (let i = 0; i < this.numberProperties; i++) {
             const p = this.properties[i];

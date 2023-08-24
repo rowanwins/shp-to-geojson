@@ -1,5 +1,5 @@
 {
-  "name": "shapefile-to-geojson",
+  "name": "shp-to-geojson",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^11.0.1",
     "ava": "^3.10.1",
     "benchmark": "^2.1.4",
