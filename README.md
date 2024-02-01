@@ -8,6 +8,8 @@
  
 ```
 import ShpToGeoJson from 'shp-to-geojson'
+// Or in the browser
+import ShpToGeoJson from 'shp-to-geojson/dist/shp-to-geojson.browser.js'
 
 // Loading From a FilePath in NodeJS
 const shp = new ShpToGeoJson({
@@ -27,10 +29,12 @@ while (!featureIterator.done) {
 ```
 
 **More Usage Examples**
-- Loading data from a Remote URL
-- Streaming individual features 
-- Zipped shp uploaded by the user in the browser (demonstrating the `shpBuffer` and `dbfBuffer` options)
-- Reprojecting with proj4
+- [Loading data](https://rowanwins.github.io/shp-to-geojson/examples/remote.html) from a Remote URL
+- [Drag-n-Drop zipped shp](https://rowanwins.github.io/shp-to-geojson/examples/drag-drop.html) uploaded by the user in the browser (demonstrating the `shpBuffer` and `dbfBuffer` options) 
+- [Reprojecting](https://rowanwins.github.io/shp-to-geojson/examples/reprojection.html) with proj4
+- [Streaming](https://rowanwins.github.io/shp-to-geojson/examples/stream.html) individual features 
+  - Work in progress (not yet proper streaming without reading the whole buffer)
+
 
 #### Options
 

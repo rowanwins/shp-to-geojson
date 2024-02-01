@@ -1,9 +1,10 @@
+import {Buffer} from 'buffer'
 import Properties from './Properties.js'
+
 import createPoint from './point.js'
 import createPolyline from './polyline.js'
 import createPolygon from './polygon.js'
 import createMultiPoint from './multiPoint.js'
-import {Buffer} from 'buffer'
 
 export default class Shp {
     constructor (options) {
@@ -139,9 +140,9 @@ export default class Shp {
     get summary () {
         return {
             shpGeometryType: this._shpGeometryType,
-            numberOfFeatures: this._numberOfFeatures,
+            numberOfFeatures: this._tableBuffer !== null ? this._numberOfFeatures : null,
             bbox: this._bbox,
-            crs: this._projString
+            crs: this._projString !== null ? this._projString : null
         }
     }
 

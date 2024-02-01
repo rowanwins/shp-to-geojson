@@ -1,4 +1,4 @@
-import Shp from '../Shp'
+import Shp from '../Shp.js'
 
 export default class BrowserShp extends Shp {
     constructor (options) {

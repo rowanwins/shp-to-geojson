@@ -1,5 +1,5 @@
 import 'cross-fetch/dist/node-polyfill.js'
-import zipper from 'zip-local'
+import AdmZip from 'adm-zip'
 import fs from 'fs'
 import Shp from '../Shp.js'
 
@@ -16,16 +16,15 @@ export default class NodeShp extends Shp {
 
       } else if (this._options.filePathZipped) {
           const filepath = this._options.filePathZipped
-          var unzippedfs = zipper.sync.unzip(filepath).memory()
+          var unzippedfs = new AdmZip(filepath)
 
-          const fileNames = unzippedfs.contents()
-          const shpName = fileNames.filter(f => f.includes('.shp'))[0]
-          const dbfName = fileNames.filter(f => f.includes('.dbf'))[0]
-          const projName = fileNames.filter(f => f.includes('.prj'))[0]
-
-          this._shpBuffer = unzippedfs.read(shpName, "buffer")
-          this._tableBuffer = unzippedfs.read(dbfName, "buffer")
-          this._projString = unzippedfs.read(projName, "text")
+          const files = unzippedfs.getEntries()
+          const shp = files.filter(f => f.entryName.includes('.shp'))[0]
+          const dbf = files.filter(f => f.entryName.includes('.dbf'))[0]
+          const proj = files.filter(f => f.entryName.includes('.prj'))[0]
+          this._shpBuffer = shp.getData()
+          this._tableBuffer = dbf.getData()
+          this._projString = proj.toString('utf8')
           this._init()
         }
     }
