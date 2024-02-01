@@ -44,7 +44,7 @@
           <p>Works in the browser using <a href="https://stuk.github.io/jszip/" target="_blank">jszip</a>. </p>
           <br><br>
           <label for="fileselect">Zipped Shp:</label>
-          <input type="file" id="fileselect" name="fileselect[]" onchange="filesUploaded()" accept="application/zip"/>
+          <input type="file" id="fileselect" name="fileselect[]" accept="application/zip"/>
           <br><br>
         
           <pre>
@@ -93,6 +93,7 @@ function filesUploaded() {
         <script type="module">
           import ShpToGeoJson from "https://unpkg.com/shp-to-geojson/dist/shp-to-geojson.browser.js";
           hljs.initHighlightingOnLoad();
+          document.getElementById('fileselect').addEventListener("change", filesUploaded);
 
           var map = L.map('map').setView([0, 0], 1);
           var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
